@@ -1,0 +1,2 @@
+# Ignore Terraform variable files that may contain secrets
+*.tfvars.json
