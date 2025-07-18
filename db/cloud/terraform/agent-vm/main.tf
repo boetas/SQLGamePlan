@@ -90,7 +90,7 @@ data "azurerm_public_ip" "public_ip_data" {
 ## Remote Install Script
 resource "null_resource" "install_docker" {
   provisioner "remote-exec" {
-    inline = ["${file("${path.module}/script.sh")}"]
+    script = "${path.module}/script.sh"
 
     connection {
       type     = "ssh"
@@ -100,4 +100,6 @@ resource "null_resource" "install_docker" {
       timeout  = "10m"
     }
   }
+  depends_on = [azurerm_linux_virtual_machine.main]
 }
+
