@@ -25,15 +25,18 @@ variable "network_dns_service_ip" {}
 variable "network_plugin" {}
 variable "network_service_cidr" {}
 
+variable "vnet_name" {}
+variable "vnet_id" {}
+variable "aks_subnet_id" {}
 variable "aks_subnet_name" {}
-variable "aks_vnet_name" {}
-variable "acr_vnet_name" {}
-variable "agent_vnet_name" {}
+variable "appgw_subnet_id" {}
 variable "appgw_subnet_name" {}
+variable "acr_id" {}
 variable "acr_name" {}
+variable "app_gateway_id" {}
 variable "app_gateway_name" {}
-variable "dns_zone_name" {}
 variable "dns_zone_scope" {}
+variable "dns_zone_id" {}
 
 variable "user_linux_node_pool_name" {}
 variable "user_node_pool_mode" {}

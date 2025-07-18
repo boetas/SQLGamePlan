@@ -1,15 +1,5 @@
 data "azurerm_subscription" "current" {}
 
-data "azurerm_subnet" "appgw-subnet" {
-  name                 = var.subnet_name
-  virtual_network_name = var.virtual_network_name
-  resource_group_name  = var.resource_group_name
-}
-
-data "azurerm_resource_group" "rg-devops" {
-  name = var.resource_group_name
-}
-
 locals {
   backend_address_pool_name      = "${var.virtual_network_name}-beap"
   frontend_port_name             = "${var.virtual_network_name}-feport"
@@ -40,7 +30,7 @@ resource "azurerm_application_gateway" "appgateway" {
 
   gateway_ip_configuration {
     name      = "appgw-ip-config"
-    subnet_id = data.azurerm_subnet.appgw-subnet.id
+    subnet_id = var.subnet_id
   }
 
   frontend_port {

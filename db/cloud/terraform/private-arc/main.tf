@@ -1,17 +1,3 @@
-# Retrieve virtual networks data
-data "azurerm_virtual_network" "vnet" {
-  for_each            = toset(var.vnet_names)
-  name                = each.key
-  resource_group_name = var.resource_group_name
-}
-
-# Retrieve subnet data for private endpoint
-data "azurerm_subnet" "acr_subnet" {
-  name                 = var.subnet_name
-  virtual_network_name = "acr-vnet"
-  resource_group_name  = var.resource_group_name
-}
-
 # Create Azure Container Registry
 resource "azurerm_container_registry" "acr" {
   name                          = var.acr_name
@@ -42,11 +28,11 @@ resource "azurerm_private_endpoint" "acr_private_endpoint" {
   name                = "${var.acr_name}-private-endpoint"
   resource_group_name = var.resource_group_name
   location            = var.location
-  subnet_id           = data.azurerm_subnet.acr_subnet.id
+  subnet_id           = var.arc_subnet_id
 
   private_dns_zone_group {
     name                 = "private-dns-zone-group"
-    private_dns_zone_ids = [azurerm_private_dns_zone.acr_dns_zone.id]
+    private_dns_zone_ids = [var.dns_zone_id]
   }
 
   private_service_connection {
@@ -58,13 +44,11 @@ resource "azurerm_private_endpoint" "acr_private_endpoint" {
 }
 
 # Create Virtual Network Links for each VNet to Private DNS Zone
-resource "azurerm_private_dns_zone_virtual_network_link" "vnet_links" {
-  for_each = data.azurerm_virtual_network.vnet
-
-  name                  = "${each.key}-vnet-link"
+resource "azurerm_private_dns_zone_virtual_network_link" "vnet_link" {
+  name                  = "${var.vnet_name}-vnet-link"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.acr_dns_zone.name
-  virtual_network_id    = each.value.id
+  virtual_network_id    = var.vnet_id
 
   depends_on = [azurerm_private_dns_zone.acr_dns_zone]
 }

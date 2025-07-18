@@ -1,16 +1,3 @@
-### Retrieve Subnet Info
-data "azurerm_subnet" "agent_subnet" {
-  name                 = var.subnet_name
-  virtual_network_name = var.vnet_name
-  resource_group_name  = var.resource_group_name
-}
-
-### Retrieve VNet Info
-data "azurerm_virtual_network" "agent_vnet" {
-  name                = var.vnet_name
-  resource_group_name = var.resource_group_name
-}
-
 ## Public IP
 resource "azurerm_public_ip" "public_ip" {
   name                = "${var.name_prefix}-public-ip"
@@ -27,7 +14,7 @@ resource "azurerm_network_interface" "main" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = data.azurerm_subnet.agent_subnet.id
+    subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
